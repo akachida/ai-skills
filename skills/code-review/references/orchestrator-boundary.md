@@ -86,4 +86,3 @@ When reviewers report issues, orchestrator MUST:
 | "It's my code anyway, I can fix my own issues"               | Self-review of self-fixes is invalid. Fresh eyes required.                           | **REPORT the issue. Different agent or re-review required.** |
 | "The orchestrator will take too long"                        | Process overhead is cheaper than bugs. Trust the workflow.                           | **REPORT and wait. Orchestrator handles dispatch.**          |
 | "This security issue is urgent, I should fix it immediately" | Urgency doesn't change your role. Report CRITICAL, orchestrator prioritizes.         | **REPORT as CRITICAL. Orchestrator fast-tracks fix.**        |
-

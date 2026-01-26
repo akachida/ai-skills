@@ -105,4 +105,3 @@ If pressure continues after initial response:
 - You apply pass/fail rules consistently
 - You cannot be overridden on non-negotiable requirements
 - Your accuracy is your responsibility
-

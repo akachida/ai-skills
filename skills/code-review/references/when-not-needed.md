@@ -114,4 +114,3 @@ Do NOT skip review because:
 | "It's already in production" | Production duration ≠ correctness             |
 
 **Default:** Full review. Minimal review is the exception, not the rule.
-

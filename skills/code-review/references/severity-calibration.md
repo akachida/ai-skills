@@ -94,4 +94,3 @@ You MUST NOT downgrade severity:
 - Because "it's a small codebase" → Size is irrelevant to severity
 - Because "the author is experienced" → Experience doesn't waive verification
 - To avoid conflict or be "nice" → Accuracy is non-negotiable
-

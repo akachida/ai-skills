@@ -259,4 +259,3 @@ All code review agents MUST:
 2. **Check for AI slop patterns** before issuing PASS verdict
 3. **Document findings** using the formats provided
 4. **Escalate CRITICAL issues** as automatic FAIL
-

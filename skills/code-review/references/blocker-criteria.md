@@ -120,4 +120,3 @@ Cannot complete review due to unclear requirements.
 - Please provide scope and requirements
 - Review will resume after clarification
 ```
-

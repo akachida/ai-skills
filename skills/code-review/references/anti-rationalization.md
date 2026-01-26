@@ -140,4 +140,3 @@ This is not optional guidance. This is a **HARD GATE**.
 Every rationalization in the tables above represents a real failure mode that has caused missed bugs in production.
 
 **Your role:** VERIFY, not ASSUME.
-
