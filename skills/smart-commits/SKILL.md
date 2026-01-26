@@ -58,12 +58,6 @@ Proposed Commit Plan:
 Proceed with this plan? [Yes / Modify / Single commit]
 ```
 
-Use `AskUserQuestion` to confirm:
-
-- **Yes** - Execute the plan as proposed
-- **Modify** - User can adjust groupings
-- **Single commit** - Combine everything into one commit
-
 ## MANDATORY RULES (NON-NEGOTIABLE)
 
 **These rules MUST be followed for EVERY commit:**
@@ -141,31 +135,10 @@ Group 3 (docs): documentation
 
 **MANDATORY: Get user confirmation before executing.**
 
-Present the commit plan using `AskUserQuestion`:
-
-```javascript
-AskUserQuestion({
-  questions: [
-    {
-      question:
-        "I've analyzed your changes and propose this commit plan. How should I proceed?",
-      header: "Commit Plan",
-      multiSelect: false,
-      options: [
-        { label: "Execute plan", description: "Create X commits as proposed" },
-        {
-          label: "Single commit",
-          description: "Combine all changes into one commit",
-        },
-        {
-          label: "Let me review",
-          description: "Show details before proceeding",
-        },
-      ],
-    },
-  ],
-});
-```
+- "I've analyzed your changes and propose this commit plan. How should I proceed?",
+  1.  Execute plan
+  2.  Single commit
+  3.  Let me review it
 
 If user selects "Let me review", show the full plan with files per commit.
 
