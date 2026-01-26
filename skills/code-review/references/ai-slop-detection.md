@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document provides centralized detection patterns for AI-generated low-quality code ("AI slop"). All code review agents MUST reference these patterns during review.
+This document provides centralized detection patterns for AI-generated low-quality code ("AI slop"). All code review agents must reference these patterns during review.
 
 ## What is AI Slop?
 
@@ -120,7 +120,7 @@ Before approving code, verify implementation shows evidence of reading:
 - [ ] Configuration (respects project config)
 - [ ] Documentation (follows documented conventions)
 
-**If evidence is missing → Flag as potential AI slop**
+If evidence is missing, flag as potential AI slop.
 
 ---
 
@@ -253,7 +253,7 @@ Flag code comments or PR descriptions containing:
 
 ## Usage
 
-All code review agents MUST:
+All code review agents must:
 
 1. **Reference this document** in their review checklist
 2. **Check for AI slop patterns** before issuing PASS verdict

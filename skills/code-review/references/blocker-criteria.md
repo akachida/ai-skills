@@ -2,19 +2,19 @@
 
 ## Decision Type Framework
 
-Reviewers MUST understand what decisions they can make independently vs. what requires escalation:
+Reviewers must understand what decisions they can make independently vs. what requires escalation:
 
-| Decision Type       | Action                | Examples                                                                 |
-| ------------------- | --------------------- | ------------------------------------------------------------------------ |
-| **Can Decide**      | Proceed with review   | Severity classification, pattern violations, quality issues              |
-| **MUST Escalate**   | STOP and report       | Unclear scope, ambiguous requirements, conflicting decisions             |
-| **CANNOT Override** | HARD BLOCK - must fix | Critical security issues, data integrity violations, compliance failures |
+| Decision Type       | Action              | Examples                                                                 |
+| ------------------- | ------------------- | ------------------------------------------------------------------------ |
+| **Can Decide**      | Proceed with review | Severity classification, pattern violations, quality issues              |
+| **Must Escalate**   | Stop and report     | Unclear scope, ambiguous requirements, conflicting decisions             |
+| **Cannot Override** | Block - must fix    | Critical security issues, data integrity violations, compliance failures |
 
 ---
 
 ## Universal Blocker Criteria
 
-These apply to ALL reviewers:
+These apply to all reviewers:
 
 ### Can Decide (Proceed Independently)
 
@@ -25,16 +25,16 @@ These apply to ALL reviewers:
 | **Quality assessment** | Evaluate against checklist items            |
 | **Recommendations**    | Provide remediation guidance                |
 
-### MUST Escalate (STOP and Report)
+### Must Escalate (Stop and Report)
 
 | Trigger                    | Action                                     |
 | -------------------------- | ------------------------------------------ |
-| **Unclear scope**          | STOP - Ask: "Which files should I review?" |
-| **Ambiguous requirements** | STOP - Ask: "What are the requirements?"   |
+| **Unclear scope**          | Stop - Ask: "Which files should I review?" |
+| **Ambiguous requirements** | Stop - Ask: "What are the requirements?"   |
 | **Conflicting decisions**  | Use NEEDS_DISCUSSION verdict               |
-| **Missing context**        | STOP - Ask for clarification               |
+| **Missing context**        | Stop - Ask for clarification               |
 
-### CANNOT Override (NON-NEGOTIABLE)
+### Cannot Override
 
 | Requirement                             | Enforcement                                |
 | --------------------------------------- | ------------------------------------------ |
@@ -42,7 +42,7 @@ These apply to ALL reviewers:
 | **3+ High issues = FAIL**               | Automatic FAIL, no exceptions              |
 | **All checklist categories verified**   | Cannot skip any section                    |
 | **File:line references for all issues** | Every issue must include location          |
-| **Independent review**                  | Cannot assume other reviewers catch issues |
+| **Independent review**                  | Do not assume other reviewers catch issues |
 | **Output schema compliance**            | Must follow exact format                   |
 
 ---
@@ -69,16 +69,16 @@ Each reviewer has additional non-negotiable requirements:
 
 ### Business Logic Reviewer
 
-- Mental Execution Analysis section REQUIRED (cannot skip)
-- Financial calculations MUST use Decimal types
-- State transitions MUST be validated
-- All 8 required output sections MUST be included
+- Mental Execution Analysis section required (do not skip)
+- Financial calculations must use Decimal types
+- State transitions must be validated
+- All 8 required output sections must be included
 
 ### Security Reviewer
 
 - SQL injection, auth bypass, hardcoded secrets = CRITICAL, automatic FAIL
-- OWASP Top 10 coverage REQUIRED
-- Dependency verification REQUIRED (slopsquatting check)
+- OWASP Top 10 coverage required
+- Dependency verification required (slopsquatting check)
 - Compliance violations = FAIL
 
 ### Test Reviewer
@@ -94,12 +94,12 @@ Each reviewer has additional non-negotiable requirements:
 
 ## Escalation Protocol
 
-When you encounter a MUST Escalate situation:
+When you encounter a must-escalate situation:
 
 1. **Document what you found** - Be specific about the ambiguity
 2. **Use NEEDS_DISCUSSION verdict** - Not PASS or FAIL
 3. **List specific questions** - What needs clarification
-4. **Do NOT proceed** - Wait for clarification before continuing
+4. **Do not proceed** - Wait for clarification before continuing
 
 **Example escalation output:**
 

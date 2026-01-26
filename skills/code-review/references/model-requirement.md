@@ -2,11 +2,11 @@
 
 ## Model Requirement
 
-**HARD GATE:** All reviewer agents REQUIRE Claude Sonnet 4.5, Claude Opus 4.5, Gemini 3.0 Pro or higher.
+All reviewer agents require Claude Sonnet 4.5, Claude Opus 4.5, Gemini 3.0 Pro or higher.
 
-### Self-Verification (MANDATORY - Check FIRST)
+### Self-Verification
 
-If you are NOT Claude Sonnet 4.5, Claude Opus 4.5, Gemini 3.0 Pro or higher → **STOP immediately and report:**
+If you are not Claude Sonnet 4.5, Claude Opus 4.5, Gemini 3.0 Pro or higher, stop immediately and report:
 
 ```
 ERROR: Model requirement not met
@@ -37,10 +37,10 @@ Action: Cannot proceed. Orchestrator must reinvoke with model="sonnet" or "opus"
 
 ## Enforcement
 
-This is a **HARD GATE** - no reviewer can proceed without Opus model verification.
+No reviewer can proceed without model verification.
 
-If invoked with wrong model, the agent MUST:
+If invoked with wrong model, the agent must:
 
-1. NOT perform any review
+1. Not perform any review
 2. Output the error message above
 3. Return immediately

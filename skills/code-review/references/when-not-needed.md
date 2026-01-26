@@ -2,7 +2,7 @@
 
 ## Minimal Review Conditions
 
-Review can be MINIMAL (not skipped) when ALL these conditions are met:
+Review can be minimal (not skipped) when all these conditions are met:
 
 | Condition                      | Verification Required                                 |
 | ------------------------------ | ----------------------------------------------------- |
@@ -11,13 +11,13 @@ Review can be MINIMAL (not skipped) when ALL these conditions are met:
 | **Generated/lock files only**  | Verify package-lock.json, go.sum, etc.                |
 | **Reverts previous commit**    | Reference original review that approved reverted code |
 
-**IMPORTANT:** "Minimal" means reduced scope, NOT skipped review.
+"Minimal" means reduced scope, not skipped review.
 
 ---
 
 ## Still Required in Minimal Mode
 
-Even in minimal mode, these checks are MANDATORY:
+Even in minimal mode, these checks are required:
 
 | File Type                    | Required Check                                |
 | ---------------------------- | --------------------------------------------- |
@@ -25,9 +25,9 @@ Even in minimal mode, these checks are MANDATORY:
 | **Lock file changes**        | Verify no security vulnerabilities introduced |
 | **Dependency version bumps** | Check for CVEs in new versions                |
 | **Revert commits**           | Confirm revert is intentional, not accidental |
-| **Database migrations**      | ALWAYS full review (data integrity risk)      |
-| **Auth/authz code**          | ALWAYS full review (security risk)            |
-| **State machine changes**    | ALWAYS full review (business logic risk)      |
+| **Database migrations**      | Full review required (data integrity risk)    |
+| **Auth/authz code**          | Full review required (security risk)          |
+| **State machine changes**    | Full review required (business logic risk)    |
 
 ---
 
@@ -45,7 +45,7 @@ Even in minimal mode, these checks are MANDATORY:
 - Pure formatting (whitespace changes)
 - Configuration values only (no business rule changes)
 
-**STILL REQUIRED:** Configuration changes affecting business rules, database migrations, workflow changes
+**Still required:** Configuration changes affecting business rules, database migrations, workflow changes
 
 ### Security Reviewer
 
@@ -53,14 +53,14 @@ Even in minimal mode, these checks are MANDATORY:
 - Pure formatting (no logic changes)
 - Previous security review covers same scope in same PR
 
-**STILL REQUIRED:** Dependency changes (even version bumps), configuration changes (secrets exposure risk), auth/authz logic
+**Still required:** Dependency changes (even version bumps), configuration changes (secrets exposure risk), auth/authz logic
 
 ### Test Reviewer
 
 - Changes to non-test code only (test files unchanged)
 - Test configuration only (no test logic)
 
-**STILL REQUIRED:** Any changes to test files, new functionality without tests
+**Still required:** Any changes to test files, new functionality without tests
 
 ---
 
@@ -80,11 +80,11 @@ Is it generated/lock files only?
 └── NO → Continue
 
 Is it in critical category (auth, DB, state machine)?
-├── YES → FULL REVIEW REQUIRED
+├── YES → Full review required
 └── NO → Continue
 
 Does it touch code in my domain?
-├── YES → FULL REVIEW REQUIRED
+├── YES → Full review required
 └── NO → Minimal review
 ```
 
@@ -92,7 +92,7 @@ Does it touch code in my domain?
 
 ## When in Doubt
 
-**ALWAYS conduct full review.**
+Conduct full review.
 
 - Missed issues compound over time
 - Business logic errors are expensive
@@ -103,7 +103,7 @@ Does it touch code in my domain?
 
 ## Anti-Rationalization
 
-Do NOT skip review because:
+Do not skip review because:
 
 | Rationalization              | Why It's Wrong                                |
 | ---------------------------- | --------------------------------------------- |

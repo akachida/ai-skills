@@ -2,7 +2,7 @@
 
 ## Severity Levels
 
-All reviewers MUST use consistent severity classification:
+All reviewers must use consistent severity classification:
 
 | Severity     | Pass/Fail Impact | General Criteria                                                                               |
 | ------------ | ---------------- | ---------------------------------------------------------------------------------------------- |
@@ -13,17 +13,17 @@ All reviewers MUST use consistent severity classification:
 
 ---
 
-## Pass/Fail Rules (NON-NEGOTIABLE)
+## Pass/Fail Rules
 
-**REVIEW FAILS if:**
+**Review fails if:**
 
-- 1 or more Critical issues found (NO EXCEPTIONS)
-- 3 or more High issues found (NO EXCEPTIONS)
+- 1 or more Critical issues found
+- 3 or more High issues found
 
-**REVIEW PASSES if:**
+**Review passes if:**
 
-- 0 Critical issues (REQUIRED)
-- Fewer than 3 High issues (REQUIRED)
+- 0 Critical issues
+- Fewer than 3 High issues
 - All High issues have clear remediation plan
 
 **NEEDS DISCUSSION if:**
@@ -36,9 +36,9 @@ All reviewers MUST use consistent severity classification:
 
 ## Classification Rules
 
-1. **When in doubt between two severities:** Choose the HIGHER severity
+1. **When in doubt between two severities:** Choose the higher severity
 2. **If issue affects production behavior:** Cannot be lower than HIGH
-3. **If issue affects security or data integrity:** MUST be CRITICAL
+3. **If issue affects security or data integrity:** Must be CRITICAL
 4. **If issue violates patterns consistently applied elsewhere:** Minimum HIGH severity
 
 ---
@@ -87,7 +87,7 @@ Each reviewer applies these levels to their domain:
 
 ## Anti-Downgrade Rules
 
-You MUST NOT downgrade severity:
+Do not downgrade severity:
 
 - Because "it's unlikely to happen" → CRITICAL stays CRITICAL
 - Because "tests will catch it" → Tests supplement review, not replace it

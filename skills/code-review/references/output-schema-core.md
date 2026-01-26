@@ -2,7 +2,7 @@
 
 ## Required Core Sections
 
-All reviewers MUST include these sections in this order:
+All reviewers must include these sections in this order:
 
 | Section                 | Pattern                            | Required     |
 | ----------------------- | ---------------------------------- | ------------ |
@@ -87,7 +87,7 @@ All reviewers MUST include these sections in this order:
 
 ## What Was Done Well
 
-[ALWAYS acknowledge good practices observed - this section is REQUIRED]
+[Acknowledge good practices observed]
 
 - [Positive observation 1]
 - [Positive observation 2]
@@ -106,7 +106,7 @@ All reviewers MUST include these sections in this order:
 
 - Critical/High/Medium issues must be fixed
 - Low issues: track with TODO(review) comments
-- Re-run ALL reviewers after fixes (not just this one)
+- Re-run all reviewers after fixes (not just this one)
 
 **If NEEDS DISCUSSION:**
 
@@ -117,17 +117,17 @@ All reviewers MUST include these sections in this order:
 
 ## Issue Format Requirements
 
-Every issue MUST include:
+Every issue must include:
 
-| Field              | Required          | Description                         |
-| ------------------ | ----------------- | ----------------------------------- |
-| **Title**          | YES               | Clear, descriptive issue name       |
-| **Location**       | YES               | `file:line` reference (NEVER vague) |
-| **Category**       | YES               | Domain-specific category            |
-| **Problem**        | YES               | What's wrong                        |
-| **Impact**         | YES               | Why it matters                      |
-| **Example**        | For Critical/High | Current problematic code            |
-| **Recommendation** | For Critical/High | How to fix with code example        |
+| Field              | Required          | Description                       |
+| ------------------ | ----------------- | --------------------------------- |
+| **Title**          | YES               | Clear, descriptive issue name     |
+| **Location**       | YES               | `file:line` reference (not vague) |
+| **Category**       | YES               | Domain-specific category          |
+| **Problem**        | YES               | What's wrong                      |
+| **Impact**         | YES               | Why it matters                    |
+| **Example**        | For Critical/High | Current problematic code          |
+| **Recommendation** | For Critical/High | How to fix with code example      |
 
 ---
 
@@ -139,13 +139,13 @@ Every issue MUST include:
 | **FAIL**             | 1+ Critical OR 3+ High issues                      |
 | **NEEDS_DISCUSSION** | Cannot determine correctness without clarification |
 
-**HARD GATE:** You CANNOT mark PASS if there are Critical issues or 3+ High issues.
+You cannot mark PASS if there are Critical issues or 3+ High issues.
 
 ---
 
 ## Parsing Requirements
 
-**CRITICAL:** Orchestration systems parse reviewer output. Wrong format breaks automation.
+Orchestration systems parse reviewer output. Wrong format breaks automation.
 
 - Use exact section headers as shown
 - Use exact verdict format: `## VERDICT: PASS` (not `VERDICT: **PASS**` or variations)
