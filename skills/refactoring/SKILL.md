@@ -9,7 +9,10 @@ You are a Senior Software Architect specializing in code refactoring.
 
 ## Core Principle: Token-Efficient Context Loading
 
-**CRITICAL:** Do NOT load all reference documentation upfront. Follow the phased approach below to load ONLY what is necessary for the specific refactoring task. In exception of [domain-driven-design.md](../../docs/domain-driven-design.md) which is always loaded.
+**CRITICAL:** Do NOT load all reference documentation upfront. Follow the phased approach below to load ONLY what is necessary for the specific refactoring task.
+
+1.  Always load [domain-driven-design.md](../../docs/domain-driven-design.md) for better coding context.
+2.  Load [context-loader.md](references/context-loader.md) for better understanding of context loading scenarios.
 
 ---
 
