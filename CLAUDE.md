@@ -63,6 +63,7 @@ Before adding content:
 | [Context Preservation](#context-preservation-protocol)      | Prevent context drift          |
 | [Lexical Salience](#lexical-salience-guidelines)            | Selective emphasis             |
 | [Repository Overview](#repository-overview)                 | Structure and purpose          |
+| [Skill Format](#skill-format)                               | Frontmatter, arguments, injection |
 | [Skill Modification](#skill-modification-verification)      | Checklist for changes          |
 
 ---
@@ -82,12 +83,20 @@ Before adding content:
 2. **Set Context:** "Your goal is to..."
 3. **Define Constraints:** "You MUST NOT..." (Use Anti-Hallucination/Anti-Rationalization)
 4. **Define Input/Output:** "Input: Code snippet. Output: JSON report."
+5. **Choose invocation mode:**
+   - Default (no flags): Claude auto-invokes + user can invoke manually
+   - `disable-model-invocation: true`: manual only — use for side-effect workflows (deploy, commit, send message)
+   - `user-invocable: false`: Claude auto-invokes only — use for background knowledge/reference skills
+6. **Determine argument handling:** If the skill takes arguments, add `argument-hint` to frontmatter and include `$ARGUMENTS` or `$ARGUMENTS[N]` in the skill body. See [Argument Handling](#argument-handling).
+7. **Determine execution context:** Inline (default) for guidelines/reference; `context: fork` for isolated task execution. See [YAML Frontmatter](#yaml-frontmatter).
 
 ### Phase 3: Drafting & Integration
 
 1. **Use the Skill Template:** Copy the structure from [Skill Format](#skill-format).
-2. **Link References:** Add a "Reference Documentation" section linking to `docs/` and `references/`.
-3. **Calibrate Severity:** Define what constitutes Critical/High/Medium/Low issues in _this specific domain_.
+2. **Write an effective description:** Claude uses `description` to decide when to auto-invoke the skill. Include what the skill does, when to use it, and keywords matching natural user requests. Vague descriptions cause missed or incorrect invocations.
+3. **Link References:** Add a "Reference Documentation" section linking to `docs/` and `references/`.
+4. **Calibrate Severity:** Define what constitutes Critical/High/Medium/Low issues in _this specific domain_.
+5. **Check size:** Keep `SKILL.md` under 500 lines. Move detailed reference material to supporting files (`reference.md`, `examples/`, `scripts/`) in the same skill directory.
 
 ### Phase 4: Verification
 
@@ -385,7 +394,7 @@ Re-read CLAUDE.md to understand current requirements.
 | Required Section           | Pattern to Check                  | If Missing                   |
 | -------------------------- | --------------------------------- | ---------------------------- |
 | Model Requirements         | `## Model Requirements`           | Add with self-verification   |
-| Anti-Rationalization Table | `Rationalization.*Why It's WRONG` | Add comprehensive table      |
+| Anti-Rationalization Table | `Rationalization.*Why It's Wrong` | Add comprehensive table      |
 | Blocker Criteria           | `## Blocker Criteria`             | Add decision table           |
 | Severity Calibration       | `## Severity Calibration`         | Add CRITICAL/HIGH/MEDIUM/LOW |
 | Output Format              | `## Output Format`                | Add structured schema        |
@@ -432,6 +441,11 @@ All items must be "yes" before completion:
 [ ] Have all hallucination checks passed?
 [ ] Does skill include anti-sycophancy guidance?
 [ ] Does skill have context preservation mechanisms?
+[ ] Is the description specific enough for Claude to know when to auto-invoke it?
+[ ] If skill takes arguments, is $ARGUMENTS or $ARGUMENTS[N] included in the body?
+[ ] If skill takes arguments, is argument-hint set in frontmatter?
+[ ] Is SKILL.md under 500 lines? (move excess to supporting files)
+[ ] Is the correct invocation mode set (disable-model-invocation / user-invocable)?
 
 If any item is "no" → skill is incomplete. Add missing sections.
 ```
@@ -494,19 +508,134 @@ Reference with: `See [pattern](references/pattern.md)`
 
 ### YAML Frontmatter
 
+All fields are optional. `description` is recommended — Claude uses it to decide when to invoke the skill.
+
+| Field | Required | Type | Description | Constraints |
+| ----- | -------- | ---- | ----------- | ----------- |
+| `name` | No | string | Skill name and `/slash-command`. Defaults to directory name if omitted | Lowercase letters, numbers, hyphens only; max 64 characters |
+| `description` | Recommended | string | What the skill does and when to use it. If omitted, Claude uses first paragraph | Non-empty; max 1024 characters |
+| `argument-hint` | No | string | Hint shown in autocomplete for expected arguments | Example: `[issue-number]`, `[filename] [format]` |
+| `allowed-tools` | No | string | Tools allowed without permission prompts when skill is active | Comma-separated (e.g., `Read, Grep, Glob`) |
+| `model` | No | string | Claude model to use when this skill is active | Valid Claude model identifier |
+| `disable-model-invocation` | No | boolean | Prevent Claude from auto-invoking this skill; manual `/name` only | Default: `false` |
+| `user-invocable` | No | boolean | Set to `false` to hide from `/` menu (background knowledge only) | Default: `true` |
+| `context` | No | string | Set to `fork` to run in an isolated subagent context | Only valid value: `fork` |
+| `agent` | No | string | Subagent type when `context: fork` is set | `Explore`, `Plan`, `general-purpose`, or custom name |
+| `hooks` | No | object | Skill lifecycle hooks | See hooks documentation |
+
+**Project convention (non-official):**
+
+- `type: reviewer` — marks a skill as a sub-reviewer invoked by the `code-review` orchestrator
+
+**Example with common fields:**
+
 ```yaml
 ---
 name: skill-name
-description: Brief description of what this skill does and when to use it (max 200 chars)
+description: What this skill does and when to invoke it
+allowed-tools: Read, Grep, Glob, Bash(npm *), Bash(git *)
+argument-hint: "[optional-arg]"
 ---
 ```
 
 **Frontmatter rules:**
 
-- `name`: lowercase letters, numbers, hyphens only; max 64 characters
-- `description`: non-empty; max 1024 characters; include what it does and when to use it
+- `name`: lowercase letters, numbers, hyphens only; max 64 characters; defaults to directory name
+- `description`: non-empty; max 1024 characters; include what it does and when to use it; Claude uses this to decide auto-invocation — be specific
+- `allowed-tools`: comma-separated tool names; use `Bash(glob *)` to restrict Bash to specific commands (e.g., `Bash(npm *)` allows only `npm *` commands)
+- `disable-model-invocation: true`: use for skills that must only be triggered manually (side effects, deployments)
+- `user-invocable: false`: use for background knowledge/reference skills not meant for direct invocation
+
+### Argument Handling
+
+Skills receive arguments passed after the skill name: `/skill-name arg1 arg2`.
+
+| Variable | Description | Example |
+| -------- | ----------- | ------- |
+| `$ARGUMENTS` | All arguments as a single string | `/review my-feature` → `$ARGUMENTS` = `my-feature` |
+| `$ARGUMENTS[N]` | Specific argument by 0-based index | `$ARGUMENTS[0]` = first arg |
+| `$N` | Shorthand for `$ARGUMENTS[N]` | `$0`, `$1`, `$2` |
+| `${CLAUDE_SESSION_ID}` | Current session ID | Useful for log file naming |
+
+**Behavior when `$ARGUMENTS` is absent:** Claude Code appends `ARGUMENTS: <value>` to the skill body automatically, so Claude still sees what was typed.
+
+**Example:**
+
+```yaml
+---
+name: fix-issue
+description: Fix a GitHub issue by number
+argument-hint: "[issue-number]"
+allowed-tools: Bash(gh *)
+---
+
+Fix GitHub issue #$ARGUMENTS[0].
+
+1. Fetch the issue: `gh issue view $ARGUMENTS[0]`
+2. Implement the fix
+3. Write tests
+```
+
+### Dynamic Context Injection
+
+Use `` !`command` `` in skill body to inject live shell output before Claude sees the prompt. Commands execute at invocation time, not by Claude.
+
+```yaml
+---
+name: pr-review
+description: Review the current pull request
+allowed-tools: Bash(gh *)
+---
+
+## Pull Request Context
+
+- Diff: !`gh pr diff`
+- Description: !`gh pr view`
+- Changed files: !`gh pr diff --name-only`
+
+Review this pull request for correctness and quality.
+```
+
+**Rules:**
+- Commands run before Claude receives the prompt
+- Output replaces the `` !`command` `` placeholder
+- Does not require Claude to have Bash permissions (it's preprocessing)
+- Use `allowed-tools: Bash(...)` only if Claude itself needs to run Bash during execution
+
+### Extended Thinking
+
+Add the word `ultrathink` anywhere in the skill body to enable extended thinking mode for complex analysis:
+
+```markdown
+Use ultrathink to analyze this problem thoroughly before responding.
+```
 
 ### Markdown Structure
+
+Keep `SKILL.md` under 500 lines. Move detailed reference content to supporting files in the same directory and reference them explicitly so Claude knows they exist.
+
+**Skill directory structure:**
+
+```
+skills/<skill-name>/
+├── SKILL.md          # Main instructions (required, max 500 lines)
+├── reference.md      # Detailed reference material (optional)
+├── examples/
+│   └── sample.md     # Example outputs (optional)
+└── scripts/
+    └── helper.sh     # Utility scripts Claude can run (optional)
+```
+
+Reference supporting files in `SKILL.md`:
+
+```markdown
+## Additional Resources
+
+- Full API reference: [reference.md](reference.md)
+- Example outputs: [examples/sample.md](examples/sample.md)
+```
+
+**Required sections for code-review skills (project convention):**
 
 ```markdown
 # Skill Title
