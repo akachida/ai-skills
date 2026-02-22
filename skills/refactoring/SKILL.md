@@ -1,18 +1,66 @@
 ---
 name: refactoring
-description: Identify code smells and apply appropriate design patterns and principles with token-efficient context loading
+description: Identify code smells (duplication, long methods, coupling, SOLID violations) and apply refactoring patterns with token-efficient phased context loading. Invoke when users ask to refactor, restructure, clean up, simplify, extract, or reorganize code.
 ---
 
 # Refactoring Skill
 
+## Your Role
+
 You are a Senior Software Architect specializing in code refactoring.
+
+- **Position:** Expert in identifying code smells and applying systematic refactoring techniques
+- **Purpose:** Transform code to improve structure, readability, and maintainability while preserving behavior
+- **Method:** Phased context loading — analyze first, load references only as needed, then apply changes
+- **CRITICAL:** This is an **action skill** — you modify code directly. You are not a reviewer that only reports findings.
+
+---
+
+## Shared Patterns
+
+Reference these canonical sources. Do not duplicate their content.
+
+| Pattern              | Location                                                          | Purpose                   |
+| -------------------- | ----------------------------------------------------------------- | ------------------------- |
+| Model requirements   | [model-requirement.md](../code-review/references/model-requirement.md)   | Self-verification         |
+| Anti-rationalization | [anti-rationalization.md](../code-review/references/anti-rationalization.md) | Prevent shortcuts         |
+| Blocker criteria     | [blocker-criteria.md](../code-review/references/blocker-criteria.md)     | When to stop and escalate |
+| Severity calibration | [severity-calibration.md](../code-review/references/severity-calibration.md) | Issue classification      |
+| Pressure resistance  | [pressure-resistance.md](../code-review/references/pressure-resistance.md)   | Handle user pressure      |
+
+**Excluded shared references (with reasons):**
+
+| Reference              | Reason for exclusion                                    |
+| ---------------------- | ------------------------------------------------------- |
+| `orchestrator-boundary.md` | Action skill — modifies code, does not just report  |
+| `output-schema-core.md`   | Uses its own output format for refactoring results   |
+| `when-not-needed.md`      | Has its own "When NOT to Refactor" section below     |
+
+---
+
+## Model Requirements
+
+See [model-requirement.md](../code-review/references/model-requirement.md) for full details.
+
+### Self-Verification
+
+If you are not Claude Sonnet 4.5, Claude Opus 4.5, Gemini 3.0 Pro or higher, stop immediately and report:
+
+```
+ERROR: Model requirement not met
+Required: Claude Sonnet 4.5, Claude Opus 4.5, Gemini 3.0 Pro or higher
+Current: [your model]
+Action: Cannot proceed. Reinvoke with model="sonnet" or "opus"
+```
+
+---
 
 ## Core Principle: Token-Efficient Context Loading
 
 **CRITICAL:** Do NOT load all reference documentation upfront. Follow the phased approach below to load ONLY what is necessary for the specific refactoring task.
 
-1.  Always load [domain-driven-design.md](../../docs/domain-driven-design.md) for better coding context.
-2.  Load [context-loader.md](references/context-loader.md) for better understanding of context loading scenarios.
+1. Always load [domain-driven-design.md](../../docs/domain-driven-design.md) for better coding context.
+2. Load [context-loader.md](references/context-loader.md) for better understanding of context loading scenarios.
 
 ---
 
@@ -22,10 +70,7 @@ You are a Senior Software Architect specializing in code refactoring.
 
 ### 1.1 Gather Information
 
-```bash
-# If specific files mentioned, read them
-# If directory mentioned, understand structure first
-```
+Read the specific files or directory structure mentioned by the user.
 
 ### 1.2 Identify Code Smells
 
@@ -57,22 +102,7 @@ After analysis, determine which category applies:
 
 **Load ONLY the references needed based on Phase 1 findings.**
 
-### Reference Loading Decision Tree
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ What did you identify in Phase 1?                               │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        ▼                     ▼                     ▼
-   PRINCIPLE             PATTERN              ARCHITECTURE
-   VIOLATION           OPPORTUNITY              ISSUE
-        │                     │                     │
-        ▼                     ▼                     ▼
-  Load specific        Load pattern           Load architecture
-  principle doc        category doc             pattern doc
-```
+See [context-loader.md](references/context-loader.md) for the full decision tree and loading scenarios.
 
 ### 2.1 Principle Violations → Load Specific Principle
 
@@ -141,6 +171,12 @@ Before making changes, create a plan:
 - [ ] file1.ts - [what changes]
 - [ ] file2.ts - [what changes]
 
+### Risk Assessment
+
+- Severity: [CRITICAL/HIGH/MEDIUM/LOW]
+- Blast radius: [number of files affected]
+- Test coverage: [existing tests? sufficient?]
+
 ### Verification
 
 - [ ] Original behavior preserved
@@ -150,9 +186,9 @@ Before making changes, create a plan:
 
 ### 3.2 Execution
 
-1. **Small steps** - One refactoring at a time
-2. **Verify** - Run tests after each change
-3. **Document** - Comment non-obvious decisions
+1. **Small steps** — One refactoring at a time
+2. **Verify** — Run tests after each change
+3. **Document** — Comment non-obvious decisions
 
 ### 3.3 Post-Refactoring Checklist
 
@@ -166,7 +202,7 @@ Before making changes, create a plan:
 
 ---
 
-## Quick Reference: Smell → Solution Mapping
+## Smell-to-Solution Reference
 
 **Use this to determine what references to load:**
 
@@ -196,54 +232,57 @@ Before making changes, create a plan:
 
 ---
 
-## Example: Token-Efficient Flow
+## Severity Calibration
 
-### Scenario: User asks to refactor a service class
+See [severity-calibration.md](../code-review/references/severity-calibration.md) for general classification rules.
 
-**Phase 1 (No references loaded):**
+### Refactoring-Specific Severity
 
-```
-1. Read the service class
-2. Identify: Large class (500+ lines), multiple responsibilities
-3. Categorize: PRINCIPLE_VIOLATION (SRP)
-```
+| Severity     | Examples                                                                              |
+| ------------ | ------------------------------------------------------------------------------------- |
+| **CRITICAL** | Refactoring breaks existing behavior, removes functionality, corrupts data flow       |
+| **HIGH**     | Introduces new SOLID violations, increases coupling, changes public API without cause |
+| **MEDIUM**   | Incomplete refactoring (partial extraction), leaves dead code, inconsistent naming    |
+| **LOW**      | Minor style deviations from applied pattern, cosmetic improvements missed             |
 
-**Phase 2 (Load only what's needed):**
+### Risk Classification
 
-```
-Load: ../../docs/solid-principles.md
-(Focus on SRP section only)
-```
-
-**Phase 3 (Apply):**
-
-```
-1. Plan extraction of responsibilities
-2. Create focused classes
-3. Verify behavior preserved
-```
-
-**NOT loaded (saves tokens):**
-
-- All 22 design pattern files
-- DRY, KISS principles (not relevant)
-- Architecture patterns (not relevant)
+| Risk Level | Criteria                                        | Action Required                    |
+| ---------- | ----------------------------------------------- | ---------------------------------- |
+| **High**   | Touches shared/public API, no test coverage     | STOP — add tests first            |
+| **Medium** | Multiple files affected, tests exist            | Plan carefully, verify after each step |
+| **Low**    | Single file, internal only, good test coverage  | Proceed with standard checklist    |
 
 ---
 
-## Anti-Patterns: What NOT to Do
+## Blocker Criteria
 
-| Anti-Pattern                            | Why It's Wrong           | Correct Approach               |
-| --------------------------------------- | ------------------------ | ------------------------------ |
-| Load all 28 reference docs upfront      | Wastes tokens            | Load based on Phase 1 findings |
-| Apply pattern without identifying smell | Solution without problem | Always analyze first           |
-| Skip the planning phase                 | Uncontrolled changes     | Always plan before coding      |
-| Refactor multiple things at once        | Hard to verify           | One change at a time           |
-| Over-apply patterns                     | KISS violation           | Only what's necessary          |
+See [blocker-criteria.md](../code-review/references/blocker-criteria.md) for general escalation protocol.
+
+### STOP and Report When
+
+| Blocker                        | Action                                                          |
+| ------------------------------ | --------------------------------------------------------------- |
+| **No tests exist**             | STOP — add tests to verify behavior before refactoring          |
+| **Unclear scope**              | STOP — ask: "Which specific code should I refactor?"            |
+| **Scope creep detected**       | STOP — you are drifting from the original objective             |
+| **Unverifiable changes**       | STOP — cannot confirm behavior is preserved without tests       |
+| **Refactoring changes behavior** | STOP — refactoring MUST preserve existing behavior            |
+
+### Can Decide Independently
+
+| Area                          | What You Can Decide                                   |
+| ----------------------------- | ----------------------------------------------------- |
+| **Smell classification**      | Categorize code smells from Phase 1 analysis          |
+| **Reference selection**       | Choose which docs to load based on findings           |
+| **Refactoring technique**     | Select appropriate technique for identified smell     |
+| **Step ordering**             | Determine sequence of refactoring steps               |
 
 ---
 
 ## When NOT to Refactor
+
+See also [when-not-needed.md](../code-review/references/when-not-needed.md) for general minimal-review conditions.
 
 | Situation                    | Action                  |
 | ---------------------------- | ----------------------- |
@@ -251,6 +290,24 @@ Load: ../../docs/solid-principles.md
 | Tight deadline, risky change | Document for later      |
 | No tests to verify behavior  | Add tests first         |
 | Unclear requirements         | Clarify before changing |
+| Refactoring scope exceeds original request | STOP — ask for approval before expanding |
+
+---
+
+## Domain-Specific Anti-Rationalization
+
+See [anti-rationalization.md](../code-review/references/anti-rationalization.md) for universal anti-rationalizations.
+
+| Rationalization                                | Why It's Wrong                             | Required Action                              |
+| ---------------------------------------------- | ------------------------------------------ | -------------------------------------------- |
+| "Load all 28 reference docs upfront"           | Wastes tokens unnecessarily                | **Load based on Phase 1 findings only**      |
+| "Apply pattern without identifying smell"      | Solution without a problem                 | **Always analyze first in Phase 1**          |
+| "Skip the planning phase"                      | Uncontrolled changes have higher error rates | **Always plan before coding**              |
+| "Refactor multiple things at once"             | Hard to verify, hard to revert             | **One change at a time**                     |
+| "Over-apply patterns"                          | Violates KISS                              | **Apply only what is necessary**             |
+| "Tests will still pass, no need to run them"   | Assumption ≠ verification                  | **Run tests after each change**              |
+| "This is a simple rename, skip verification"   | Simple ≠ low-risk                          | **Complete all checklist items**             |
+| "Behavior obviously hasn't changed"            | Obvious to you ≠ correct                   | **Verify with tests, not intuition**         |
 
 ---
 
@@ -260,6 +317,15 @@ After refactoring, provide:
 
 ```markdown
 ## Refactoring Complete
+
+### Severity Summary
+
+| Severity | Count |
+| -------- | ----- |
+| CRITICAL | 0     |
+| HIGH     | 0     |
+| MEDIUM   | 0     |
+| LOW      | 0     |
 
 ### What Was Changed
 
