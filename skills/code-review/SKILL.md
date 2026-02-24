@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: review code quality, architecture, design patterns, security, algorithmic flow and maintainability
+description: Review code quality, architecture, design patterns, algorithmic flow, and maintainability. Orchestrates parallel sub-reviewers (business-logic, security, testing) and aggregates findings. Invoke when users ask to review code, check quality, audit architecture, or assess maintainability.
 ---
 
 # Code Reviewer (Foundation)
@@ -20,18 +20,19 @@ Run the code-reviewer skills in parallel and aggregate their reports with your o
 
 ## Shared Patterns
 
-Before proceeding, load and follow these shared patterns:
+Before proceeding, load and follow these shared patterns. Do not duplicate their content.
 
-| Pattern                                                         | What It Covers                          |
-| --------------------------------------------------------------- | --------------------------------------- |
-| [model-requirement.md](references/model-requirement.md)         | model requirements, self-verification   |
-| [orchestrator-boundary.md](references/orchestrator-boundary.md) | You REPORT, you don't FIX               |
-| [severity-calibration.md](references/severity-calibration.md)   | CRITICAL/HIGH/MEDIUM/LOW classification |
-| [output-schema-core.md](references/output-schema-core.md)       | Required output sections                |
-| [blocker-criteria.md](references/blocker-criteria.md)           | When to STOP and escalate               |
-| [pressure-resistance.md](references/pressure-resistance.md)     | Resist pressure to skip checks          |
-| [anti-rationalization.md](references/anti-rationalization.md)   | Don't rationalize skipping              |
-| [when-not-needed.md](references/when-not-needed.md)             | Minimal review conditions               |
+| Pattern              | Location                                                                     | Purpose                             |
+| -------------------- | ---------------------------------------------------------------------------- | ----------------------------------- |
+| Model requirements   | [model-requirement.md](references/model-requirement.md)                      | Self-verification                   |
+| Orchestrator boundary| [orchestrator-boundary.md](references/orchestrator-boundary.md)              | You REPORT, you do not FIX          |
+| Severity calibration | [severity-calibration.md](references/severity-calibration.md)                | CRITICAL/HIGH/MEDIUM/LOW classification |
+| Output schema        | [output-schema-core.md](references/output-schema-core.md)                    | Required output sections            |
+| Blocker criteria     | [blocker-criteria.md](references/blocker-criteria.md)                        | When to STOP and escalate           |
+| Pressure resistance  | [pressure-resistance.md](references/pressure-resistance.md)                  | Resist pressure to skip checks      |
+| Anti-rationalization | [anti-rationalization.md](references/anti-rationalization.md)                 | Prevent rationalized skipping       |
+| AI slop detection    | [ai-slop-detection.md](references/ai-slop-detection.md)                      | Hallucination prevention            |
+| When not needed      | [when-not-needed.md](references/when-not-needed.md)                          | Minimal review conditions           |
 
 ## Additional Skills (Load When Needed)
 
@@ -43,21 +44,18 @@ Before proceeding, load and follow these shared patterns:
 
 ## Model Requirements
 
-**Self-Verification Before Review**
+See [model-requirement.md](references/model-requirement.md) for full details.
 
-This skill requires Claude Sonnet 4.5 High reasoning or higher, Gemini 3 Pro High reasoning or higher, or any other model with high reasoning similar to those for comprehensive code quality analysis.
+### Self-Verification
 
-**If you are not a model with high reasoning:** Stop immediately and return this error:
+If you are not Claude Sonnet 4.5, Claude Opus 4.5, Gemini 3.0 Pro or higher, stop immediately and report:
 
 ```
-ERROR: Model Requirements Not Met
-
-This agent cannot proceed on a lesser model because comprehensive code quality
-review requires Opus-level analysis for architecture patterns, algorithmic
-complexity, and maintainability assessment.
+ERROR: Model requirement not met
+Required: Claude Sonnet 4.5, Claude Opus 4.5, Gemini 3.0 Pro or higher
+Current: [your model]
+Action: Cannot proceed. Reinvoke with model="sonnet" or "opus"
 ```
-
-**If you are a model with high reasoning:** Proceed with the review. Your capabilities are sufficient for this task.
 
 ---
 
@@ -95,7 +93,7 @@ Work through all areas systematically. Do not skip any category.
 | **Data Flow**            | Inputs → processing → outputs correct                              |
 | **Context Propagation**  | Request IDs, user context, transaction context flows through       |
 | **State Sequencing**     | Operations happen in correct order                                 |
-| **Codebase Patterns**    | Follows existing conventions (if all methods log, this should too) |
+| **Codebase Patterns**    | Follows existing conventions (if all methods log, this MUST too)   |
 | **Message Distribution** | Events/messages reach all required destinations                    |
 | **Cross-Cutting**        | Logging, metrics, audit trails at appropriate points               |
 
@@ -122,7 +120,7 @@ Work through all areas systematically. Do not skip any category.
 - [ ] Proper separation of concerns
 - [ ] Loose coupling between components
 - [ ] No circular dependencies
-- [ ] Scalability considered
+- [ ] Scalability verified
 
 #### Cross-Package Duplication
 
@@ -161,7 +159,11 @@ Work through all areas systematically. Do not skip any category.
 
 ---
 
-## Domain-Specific Severity Examples
+## Severity Calibration
+
+See [severity-calibration.md](references/severity-calibration.md) for general classification rules.
+
+### Code Review-Specific Severity
 
 | Severity     | Code Quality Examples                                                                                                | Dead Code / Duplication Examples                          |
 | ------------ | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
@@ -172,13 +174,60 @@ Work through all areas systematically. Do not skip any category.
 
 ---
 
-## Domain-Specific Anti-Rationalization
+## Blocker Criteria
 
-| Rationalization                                 | Required Action                                                   |
-| ----------------------------------------------- | ----------------------------------------------------------------- |
-| "Code follows language idioms, must be correct" | **Idiomatic ≠ correct. Verify business logic.**                   |
-| "Refactoring only, no behavior change"          | **Refactoring can introduce bugs. Verify behavior preservation.** |
-| "Modern framework handles this"                 | **Verify features enabled correctly. Misconfiguration common.**   |
+See [blocker-criteria.md](references/blocker-criteria.md) for general escalation protocol.
+
+### STOP and Report When
+
+| Blocker                              | Action                                                              |
+| ------------------------------------ | ------------------------------------------------------------------- |
+| **No diff or files to review**       | STOP — report: "No changes found to review."                        |
+| **Unclear scope**                    | STOP — ask: "Which files or changes should I review?"               |
+| **Missing requirements**             | STOP — ask: "What are the requirements for this change?"            |
+| **Phantom dependency detected**      | STOP — mark CRITICAL, automatic FAIL                                |
+| **Conflicting reviewer findings**    | Use NEEDS_DISCUSSION verdict                                        |
+
+### Can Decide Independently
+
+| Area                       | What You Can Decide                                |
+| -------------------------- | -------------------------------------------------- |
+| **Severity classification**| Classify issues as CRITICAL/HIGH/MEDIUM/LOW        |
+| **Pattern violations**     | Identify and document violations                   |
+| **Quality assessment**     | Evaluate against checklist items                   |
+| **Recommendations**        | Provide remediation guidance                       |
+| **Verdict**                | Determine PASS/FAIL/NEEDS_DISCUSSION               |
+
+---
+
+## Pressure Resistance
+
+See [pressure-resistance.md](references/pressure-resistance.md) for universal scenarios.
+
+### Code Review-Specific Pressure Scenarios
+
+| User Says                                       | This Is              | Your Response                                                                          |
+| ----------------------------------------------- | -------------------- | -------------------------------------------------------------------------------------- |
+| "Just approve it, it's a small change"           | **Minimization**     | "Size ≠ risk. One line can introduce critical vulnerabilities. MUST review all areas." |
+| "The tests pass, so it's fine"                   | **Tool substitution**| "Tests passing ≠ complete verification. Tests may miss edge cases. MUST review independently." |
+| "Other reviewers will catch that"                | **Assumption**       | "Each reviewer is independent. Cannot assume others catch adjacent issues."            |
+| "Skip architecture, just check for bugs"         | **Scope reduction**  | "Architecture issues cause bugs. Cannot skip any checklist category."                  |
+| "I'll fix that later, just pass this review"     | **Deferral**         | "Known issues MUST be documented regardless of fix timeline. Cannot ignore."           |
+
+---
+
+## Anti-Rationalization Table
+
+See [anti-rationalization.md](references/anti-rationalization.md) for universal anti-rationalizations.
+
+| Rationalization                                 | Why It's Wrong                                         | Required Action                                                   |
+| ----------------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------- |
+| "Code follows language idioms, must be correct" | Idiomatic ≠ correct. Clean code can hide logic bugs.   | **Verify business logic independently**                           |
+| "Refactoring only, no behavior change"          | Refactoring can introduce bugs at any scale.           | **Verify behavior preservation against tests**                    |
+| "Modern framework handles this"                 | Frameworks require correct configuration.              | **Verify features enabled correctly. Misconfiguration is common.**|
+| "Author is experienced, code is likely correct" | Experience ≠ error-free. Everyone makes mistakes.      | **Review all checklist categories regardless of author**          |
+| "Already reviewed similar code before"           | Each review is independent. Standards evolve.          | **Review current changes thoroughly**                             |
+| "Only checking what seems relevant"              | You do not decide relevance. The checklist does.       | **Review all checklist categories**                               |
 
 ---
 
@@ -283,13 +332,13 @@ async function fulfillOrder(orderId: string) {
 
 ---
 
-## Remember
+## Mandatory Principles
 
-1. **Mental walk the code** - Trace execution flow with concrete scenarios
-2. **Check codebase consistency** - If all methods log, this must too
-3. **Review independently** - Don't assume other reviewers catch adjacent issues
-4. **Be specific** - File:line references for EVERY issue
-5. **Verify dependencies** - AI hallucinates package names
+1. **MUST mental walk the code** — Trace execution flow with concrete scenarios
+2. **MUST check codebase consistency** — If all methods log, this MUST too
+3. **MUST review independently** — Do not assume other reviewers catch adjacent issues
+4. **MUST be specific** — File:line references for every issue
+5. **MUST verify dependencies** — AI hallucinates package names
 
 **Your responsibility:** Architecture, code quality, algorithmic correctness, codebase consistency.
 
@@ -299,12 +348,12 @@ async function fulfillOrder(orderId: string) {
 
 This reviewer reports issues. It does not fix them.
 
-See [shared-patterns/reviewer-orchestrator-boundary.md](references/reviewer-orchestrator-boundary.md) for:
+See [orchestrator-boundary.md](references/orchestrator-boundary.md) for:
 
-- Why reviewers must not edit files
+- Why reviewers MUST NOT edit files
 - How orchestrator dispatches fixes
 - Anti-rationalization table for "I'll just fix it" temptation
 
 **Your output:** Structured report with VERDICT, Issues, Recommendations
-**Your action:** NONE - Do NOT use Edit, Create, or Execute tools to modify code
+**Your action:** NONE — Do NOT use Edit, Create, or Execute tools to modify code
 **After you report:** Orchestrator dispatches appropriate agent to implement fixes
