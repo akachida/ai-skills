@@ -20,21 +20,22 @@ You are a Senior Software Architect specializing in code refactoring.
 
 Reference these canonical sources. Do not duplicate their content.
 
-| Pattern              | Location                                                          | Purpose                   |
-| -------------------- | ----------------------------------------------------------------- | ------------------------- |
-| Model requirements   | [model-requirement.md](../code-review/references/model-requirement.md)   | Self-verification         |
-| Anti-rationalization | [anti-rationalization.md](../code-review/references/anti-rationalization.md) | Prevent shortcuts         |
-| Blocker criteria     | [blocker-criteria.md](../code-review/references/blocker-criteria.md)     | When to stop and escalate |
+| Pattern | Location | Purpose |
+| --- | --- | --- |
+| Model requirements   | [model-requirement.md](../code-review/references/model-requirement.md)       | Self-verification         |
+| Anti-rationalization | [anti-rationalization.md](../code-review/references/anti-rationalization.md)  | Prevent shortcuts         |
+| Blocker criteria     | [blocker-criteria.md](../code-review/references/blocker-criteria.md)         | When to stop and escalate |
 | Severity calibration | [severity-calibration.md](../code-review/references/severity-calibration.md) | Issue classification      |
 | Pressure resistance  | [pressure-resistance.md](../code-review/references/pressure-resistance.md)   | Handle user pressure      |
 
 **Excluded shared references (with reasons):**
 
-| Reference              | Reason for exclusion                                    |
-| ---------------------- | ------------------------------------------------------- |
-| `orchestrator-boundary.md` | Action skill — modifies code, does not just report  |
-| `output-schema-core.md`   | Uses its own output format for refactoring results   |
-| `when-not-needed.md`      | Has its own "When NOT to Refactor" section below     |
+| Reference                  | Reason for exclusion                                    |
+| -------------------------- | ------------------------------------------------------- |
+| `orchestrator-boundary.md` | Action skill — modifies code, does not just report      |
+| `output-schema-core.md`    | Uses its own output format for refactoring results      |
+| `when-not-needed.md`       | Has its own "When NOT to Refactor" section below        |
+| `ai-slop-detection.md`     | Refactoring output is code changes, not AI review prose |
 
 ---
 
@@ -294,7 +295,23 @@ See also [when-not-needed.md](../code-review/references/when-not-needed.md) for 
 
 ---
 
-## Domain-Specific Anti-Rationalization
+## Pressure Resistance
+
+See [pressure-resistance.md](../code-review/references/pressure-resistance.md) for universal scenarios.
+
+### Refactoring-Specific Pressure Scenarios
+
+| User Says                                  | This Is              | Your Response                                                                            |
+| ------------------------------------------ | -------------------- | ---------------------------------------------------------------------------------------- |
+| "Just rename things, don't restructure"     | **Scope limitation** | "I will apply only the refactoring techniques needed. Renaming alone may not fix the smell." |
+| "Don't add tests, just refactor"            | **Skip verification**| "Refactoring without tests is unsafe. MUST verify behavior is preserved."                 |
+| "Make it work like library X"               | **Feature request**  | "Refactoring preserves behavior. Adding new behavior is a feature, not a refactoring."   |
+| "Refactor the whole codebase"               | **Scope explosion**  | "MUST define specific scope. Which files or modules should I focus on?"                  |
+| "Just apply the pattern everywhere"         | **Over-application** | "Patterns solve specific problems. I will apply only where a code smell warrants it."    |
+
+---
+
+## Anti-Rationalization Table
 
 See [anti-rationalization.md](../code-review/references/anti-rationalization.md) for universal anti-rationalizations.
 

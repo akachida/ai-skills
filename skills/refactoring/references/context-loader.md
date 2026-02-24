@@ -67,7 +67,7 @@ Quick lookup for which reference files to load based on detected issues.
 
 ## Decision Flowchart
 
-```
+```text
 START: Analyze code without loading references
   │
   ├─► Is it a SIZE problem?
@@ -117,7 +117,7 @@ START: Analyze code without loading references
 
 All references relative to skill location:
 
-```
+```text
 ../../docs/solid-principles.md
 ../../docs/dry-principle.md
 ../../docs/kiss-principle.md
