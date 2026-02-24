@@ -523,10 +523,6 @@ All fields are optional. `description` is recommended — Claude uses it to deci
 | `agent` | No | string | Subagent type when `context: fork` is set | `Explore`, `Plan`, `general-purpose`, or custom name |
 | `hooks` | No | object | Skill lifecycle hooks | See hooks documentation |
 
-**Project convention (non-official):**
-
-- `type: reviewer` — marks a skill as a sub-reviewer invoked by the `code-review` orchestrator
-
 **Example with common fields:**
 
 ```yaml
